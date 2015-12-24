@@ -19,8 +19,6 @@ class Flebot
     end
 
     def balance
-      @members = [{'mlensment@gmail.com' => '@mlensment'}, {'rainersai@gmail.com' => '@rainersai'}, { 'mihkel@sokk.ee' => '@mihkelsokk' }]
-
       response = []
       @members.each do |x|
         x_email, x_handle = x.first[0], x.first[1]
