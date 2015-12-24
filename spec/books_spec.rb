@@ -30,7 +30,13 @@ RSpec.describe Flebot::Books do
 
     books = Flebot::Books.new('felbot books credit @user3 3.40', {'user1@test.ee' => '@user1'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
     response = books.execute
-    expect(response).to eq('ERROR: There is no @user3 in this conversation.')
+    expect(response).to eq('ERROR: There is no @user3 in this conversation!')
+  end
+
+  it 'does not credit for the user itself' do
+    books = Flebot::Books.new('felbot books credit @user1 3.40', {'user1@test.ee' => '@user1'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
+    response = books.execute
+    expect(response).to eq('ERROR: Cannot credit yourself!')
   end
 
   it 'credits' do

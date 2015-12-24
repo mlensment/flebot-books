@@ -1,6 +1,6 @@
 require 'sqlite3'
 require 'bigdecimal'
-require 'pry'
+# require 'pry'
 
 class Flebot
   class Books
@@ -45,7 +45,8 @@ class Flebot
       subject_handle = @subject
 
       return "ERROR: Amount #{@amount} must be a number!" unless is_number?(@amount)
-      return "ERROR: There is no #{subject_handle} in this conversation." unless subject_email
+      return "ERROR: There is no #{subject_handle} in this conversation!" unless subject_email
+      return "ERROR: Cannot credit yourself!" if sender_email == subject_email
 
       @db.execute(
         "INSERT INTO #{self.class.table} (debit_account, credit_account, amount, description)
