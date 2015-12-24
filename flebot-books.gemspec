@@ -9,4 +9,6 @@ Gem::Specification.new do |s|
   s.files       = ["lib/flebot/books.rb"]
   s.homepage    = 'https://github.com/mlensment/flebot-books'
   s.license     = 'MIT'
+  s.add_dependency 'sqlite3', '1.3.11'
+  s.add_development_dependency 'rspec', '3.4'
 end
