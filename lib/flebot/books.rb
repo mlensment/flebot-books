@@ -70,12 +70,15 @@ class Flebot
     end
 
     def transactions
+      limit = @args || 10
+      return 'ERROR: Limit must be a number' unless is_number?(limit)
+
       emails = @member_emails.map {|x| "'#{x}'"}.join(', ')
       rows = @db.execute(
         "select * from #{self.class.table} where "\
         "debit_account IN (#{emails}) "\
         "AND credit_account IN (#{emails}) "\
-        "order by created_at desc limit 10"
+        "order by created_at desc limit #{limit}"
       )
 
       response = []

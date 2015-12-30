@@ -84,6 +84,10 @@ RSpec.describe Flebot::Books do
 
     books = Flebot::Books.new('flebot books transactions', {'user1@test.ee' => '@user1'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
     response = books.execute
-    expect(response).to start_with('@user2 -> @user1 5.00€')
+    expect(response).to eq('@user2 -> @user1 5.00€ - star wars the other day')
+
+    books = Flebot::Books.new('flebot books transactions abc adfas asfa s', {'user1@test.ee' => '@user1'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
+    response = books.execute
+    expect(response).to eq('ERROR: Limit must be a number')
   end
 end
