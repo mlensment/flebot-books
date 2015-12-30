@@ -1,6 +1,6 @@
 require 'sqlite3'
 require 'bigdecimal'
-require 'pry'
+# require 'pry'
 
 class Flebot
   class Books
@@ -14,11 +14,11 @@ class Flebot
     end
 
     def help
-      return "Books app keeps tabs on your cash flow between your friends\n"\
+      return "Books App keeps tabs on your cashflow between your friends\n"\
         "Avaliable actions are: [help, balance, credit, transactions]\n\n"\
-        "help - shows this help message\n"\
-        "balance - shows current balance between conversation members\n(example: flebot books balance)\n"\
-        "transactions [@limit=10] - shows last transactions between conversation members\n(example: flebot books transactions 10)\n"\
+        "help - shows this help message\n\n"\
+        "balance - shows current balance between conversation members\n(example: flebot books balance)\n\n"\
+        "transactions [@limit=10] - shows last transactions between conversation members\n(example: flebot books transactions 5)\n\n"\
         "credit @@fleep_handle_of_a_user @amount [@description] - initiates a credit transaction on @user's account\n"\
         "(example: flebot books credit @martin 3.50 star wars on 29.12.2015)"
     end
