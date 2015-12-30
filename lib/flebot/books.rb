@@ -69,7 +69,7 @@ class Flebot
     end
 
     def transactions
-      emails = @member_emails.map {|x| "'#{x}'"}.join(', ')
+      emails = @member_emails.map {|x| "'#{x}'"}.join(', ')
       rows = @db.execute(
         "select * from #{self.class.table} where "\
         "debit_account IN (#{emails}) "\
