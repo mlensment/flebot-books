@@ -4,7 +4,11 @@ require 'flebot/books'
 RSpec.describe Flebot::Books do
   before(:each) do
     @db = SQLite3::Database.new 'flebot-books.db'
-    @db.execute("DROP TABLE #{Flebot::Books.table};")
+    rows = @db.execute(
+      "SELECT * FROM sqlite_master WHERE name = '#{Flebot::Books.table}' and type = 'table'"
+    )
+    
+    @db.execute("DROP TABLE #{Flebot::Books.table};") if rows.any?
   end
 
   it 'responds to execute' do
