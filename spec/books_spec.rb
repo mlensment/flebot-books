@@ -60,4 +60,10 @@ RSpec.describe Flebot::Books do
     response = books.execute
     expect(response).to eq('Credit action successful! @user1 owes @user3 5.00€')
   end
+
+  it 'shows last transactions' do
+    books = Flebot::Books.new('felbot books transactions', {'user1@test.ee' => '@user1'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
+    response = books.execute
+    expect(response).to eq('There are no transaction between conversation members.')
+  end
 end

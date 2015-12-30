@@ -1,6 +1,6 @@
 require 'sqlite3'
 require 'bigdecimal'
-# require 'pry'
+require 'pry'
 
 class Flebot
   class Books
@@ -11,12 +11,18 @@ class Flebot
       @description = msg_body.split(' ')[5]
       @sender = sender
       @members = members
+      @member_emails = @members.reduce([]) {|list, member| list + member.keys }
       init_db
     end
 
     def help
       return "Books app keeps tabs on your cash flow between your friends\n"\
-        "Avaliable actions are: [balance, credit, debit]"
+        "Avaliable actions are: [help, balance, credit, transactions]\n\n"\
+        "help - shows this help message\n"\
+        "balance - shows current balance between conversation members\n(example: flebot books balance)\n"\
+        "transactions [@limit=10] - shows last transactions between conversation members\n(example: flebot books transactions 10)\n"\
+        "credit @@fleep_handle_of_a_user @amount [@description] - initiates a credit transaction on @user's account\n"\
+        "(example: flebot books credit @martin 3.50 star wars on 29.12.2015)"
     end
 
     def balance
@@ -49,8 +55,8 @@ class Flebot
       return "ERROR: Cannot credit yourself!" if sender_email == subject_email
 
       @db.execute(
-        "INSERT INTO #{self.class.table} (debit_account, credit_account, amount, description)
-          VALUES (?, ?, ?, ?)", [sender_email, subject_email, @amount, @description]
+        "INSERT INTO #{self.class.table} (debit_account, credit_account, amount, description, created_at)
+          VALUES (?, ?, ?, ?, datetime())", [sender_email, subject_email, @amount, @description]
       )
 
       debt = balance_between(sender_email, subject_email)
@@ -62,8 +68,28 @@ class Flebot
       end
     end
 
+    def transactions
+      emails = @member_emails.map {|x| "'#{x}'"}.join(', ')
+      rows = @db.execute(
+        "select * from #{self.class.table} where "\
+        "debit_account IN (#{emails}) "\
+        "AND credit_account IN (#{emails}) "\
+        "order by created_at desc limit 10"
+      )
+
+      response = []
+      rows.each do |x|
+        debit_handle = find_member_handle_by_email(x['debit_account'])
+        credit_handle = find_member_handle_by_email(x['credit_account'])
+        response << "#{debit_handle} -> #{credit_handle} #{x['amount']} #{x['description']} #{x['created_at']}"
+      end
+
+      response << 'There are no transaction between conversation members.' if response.empty?
+      response.join("\n")
+    end
+
     def execute
-      if ['help', 'balance', 'credit'].include?(@action)
+      if ['help', 'balance', 'credit', 'transactions'].include?(@action)
         send(@action)
       else
         help
@@ -88,7 +114,8 @@ class Flebot
           debit_account varchar(100),
           credit_account varchar(100),
           amount numeric,
-          description varchar(255)
+          description varchar(255),
+          created_at datetime
         )"
       )
     end
@@ -114,6 +141,10 @@ class Flebot
         return x.key(handle) unless x.key(handle).nil?
       end
       nil
+    end
+
+    def find_member_handle_by_email(email)
+      @members[email]
     end
 
     def is_number? string
