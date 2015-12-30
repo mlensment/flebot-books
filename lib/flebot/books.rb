@@ -106,7 +106,7 @@ class Flebot
 
     private
     def init_db
-      @db = SQLite3::Database.new 'flebot-books.db'
+      @db = SQLite3::Database.new 'db/flebot-books.db'
       rows = @db.execute(
         "SELECT * FROM sqlite_master WHERE name = '#{self.class.table}' and type = 'table'"
       )
