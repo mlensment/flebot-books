@@ -79,9 +79,9 @@ class Flebot
 
       response = []
       rows.each do |x|
-        debit_handle = find_member_handle_by_email(x['debit_account'])
-        credit_handle = find_member_handle_by_email(x['credit_account'])
-        response << "#{debit_handle} -> #{credit_handle} #{x['amount']} #{x['description']} #{x['created_at']}"
+        debit_handle = find_member_handle_by_email(x[0])
+        credit_handle = find_member_handle_by_email(x[1])
+        response << "#{debit_handle} -> #{credit_handle} #{sprintf("%.02f€", x[2])} #{x[4]} #{x[3]}".strip
       end
 
       response << 'There are no transaction between conversation members.' if response.empty?
@@ -144,7 +144,10 @@ class Flebot
     end
 
     def find_member_handle_by_email(email)
-      @members[email]
+      @members.each do |x|
+        return x[email] unless x[email].nil?
+      end
+      nil
     end
 
     def is_number? string
