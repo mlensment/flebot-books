@@ -26,11 +26,11 @@ RSpec.describe Flebot::Books do
   it 'does not credit with invalid arguments' do
     books = Flebot::Books.new('flebot books credit', {'user1@test.ee' => '@user1'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
     response = books.execute
-    expect(response).to eq('ERROR: Amount  must be a number!')
+    expect(response).to eq('ERROR: Too few arguments!')
 
     books = Flebot::Books.new('flebot books credit @user3', {'user1@test.ee' => '@user1'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
     response = books.execute
-    expect(response).to eq('ERROR: Amount  must be a number!')
+    expect(response).to eq('ERROR: Amount must be a number!')
 
     books = Flebot::Books.new('flebot books credit @user3 3.40', {'user1@test.ee' => '@user1'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
     response = books.execute
@@ -70,13 +70,13 @@ RSpec.describe Flebot::Books do
     response = books.execute
     expect(response).to eq('There are no transaction between conversation members.')
 
-    books = Flebot::Books.new('flebot books credit @user1 5', {'user2@test.ee' => '@user2'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
+    books = Flebot::Books.new('flebot books credit @user1 5 star wars the other day', {'user2@test.ee' => '@user2'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
     response = books.execute
     expect(response).to eq('Credit action successful! @user1 owes @user2 5.00€')
 
     books = Flebot::Books.new('flebot books transactions', {'user1@test.ee' => '@user1'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}])
     response = books.execute
-    expect(response).to start_with('@user2 -> @user1 5.00€')
+    expect(response).to eq('@user2 -> @user1 5.00€ - star wars the other day')
 
     # transaction between someone who is not in the other conversation
     books = Flebot::Books.new('flebot books credit @user1 5', {'user3@test.ee' => '@user3'}, [{'user1@test.ee' => '@user1'}, {'user2@test.ee' => '@user2'}, {'user3@test.ee' => '@user3'}])

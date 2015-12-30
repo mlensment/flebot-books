@@ -6,9 +6,7 @@ class Flebot
   class Books
     def initialize(msg_body, sender, members)
       @action = msg_body.split(' ')[2]
-      @subject = msg_body.split(' ')[3]
-      @amount = msg_body.split(' ')[4]
-      @description = msg_body.split(' ')[5]
+      @args = msg_body.split(' ', 4)[3]
       @sender = sender
       @members = members
       @member_emails = @members.reduce([]) {|list, member| list + member.keys }
@@ -45,18 +43,21 @@ class Flebot
     end
 
     def credit
+      return "ERROR: Too few arguments!" unless @args
       sender_email = @sender.first[0]
       sender_handle = @sender.first[1]
-      subject_email = find_member_email_by_handle(@subject)
-      subject_handle = @subject
+      subject_email = find_member_email_by_handle(@args.split(' ')[0])
+      subject_handle = @args.split(' ')[0]
+      amount = @args.split(' ')[1]
+      description = @args.split(' ', 3)[2]
 
-      return "ERROR: Amount #{@amount} must be a number!" unless is_number?(@amount)
+      return "ERROR: Amount must be a number!" unless is_number?(amount)
       return "ERROR: There is no #{subject_handle} in this conversation!" unless subject_email
       return "ERROR: Cannot credit yourself!" if sender_email == subject_email
 
       @db.execute(
         "INSERT INTO #{self.class.table} (debit_account, credit_account, amount, description, created_at)
-          VALUES (?, ?, ?, ?, datetime())", [sender_email, subject_email, @amount, @description]
+          VALUES (?, ?, ?, ?, datetime())", [sender_email, subject_email, amount, description]
       )
 
       debt = balance_between(sender_email, subject_email)
@@ -81,7 +82,7 @@ class Flebot
       rows.each do |x|
         debit_handle = find_member_handle_by_email(x[0])
         credit_handle = find_member_handle_by_email(x[1])
-        response << "#{debit_handle} -> #{credit_handle} #{sprintf("%.02f€", x[2])} #{x[4]} #{x[3]}".strip
+        response << "#{debit_handle} -> #{credit_handle} #{sprintf("%.02f€", x[2])} - #{x[3]}"
       end
 
       response << 'There are no transaction between conversation members.' if response.empty?
