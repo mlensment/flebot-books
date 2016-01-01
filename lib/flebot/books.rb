@@ -14,7 +14,7 @@ class Flebot
     end
 
     def help
-      return "bla Books App keeps tabs on your cashflow between your friends\n"\
+      return "Books App keeps tabs on your cashflow between your friends\n"\
         "Avaliable actions are: [help, balance, credit, transactions]\n\n"\
         "help - shows this help message\n\n"\
         "balance - shows current balance between conversation members\n(example: flebot books balance)\n\n"\
