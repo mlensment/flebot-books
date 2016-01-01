@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'flebot-books'
-  s.version     = '0.0.0'
+  s.version     = '0.0.1'
   s.date        = '2015-12-24'
   s.summary     = "Books app for Flebot"
   s.description = "Books app for Flebot"
