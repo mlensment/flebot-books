@@ -14,7 +14,7 @@ class Flebot
     end
 
     def help
-      return "Books App keeps tabs on your cashflow between your friends\n"\
+      return "bla Books App keeps tabs on your cashflow between your friends\n"\
         "Avaliable actions are: [help, balance, credit, transactions]\n\n"\
         "help - shows this help message\n\n"\
         "balance - shows current balance between conversation members\n(example: flebot books balance)\n\n"\
@@ -106,7 +106,7 @@ class Flebot
 
     private
     def init_db
-      @db = SQLite3::Database.new 'db/flebot-books.db'
+      @db = SQLite3::Database.new 'app-data/flebot-books.db'
       rows = @db.execute(
         "SELECT * FROM sqlite_master WHERE name = '#{self.class.table}' and type = 'table'"
       )

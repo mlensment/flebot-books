@@ -3,7 +3,7 @@ require 'flebot/books'
 
 RSpec.describe Flebot::Books do
   before(:each) do
-    @db = SQLite3::Database.new 'db/flebot-books.db'
+    @db = SQLite3::Database.new 'app-data/flebot-books.db'
     rows = @db.execute(
       "SELECT * FROM sqlite_master WHERE name = '#{Flebot::Books.table}' and type = 'table'"
     )
